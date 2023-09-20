@@ -1,0 +1,39 @@
+TightVNC Via GPO
+Install TightVNC via GPO.
+
+The following steps was tested and and work on Windows Server 2008 R2, but it doesn’t mean that it’s going to work for all.
+
+This is what I did to work on mine:
+
+Download TightVNC on you server and make sure users have permission to read it.  The best place for me is create a sub folder on \ServerNETLogon
+
+Mine was \ServerNetlogontightvnc
+First install the TightVNC on a Windows 7 for test purpose and setup all the settings and password as needed it.
+
+Once installed on a PC and got all the settings as needed.  Go to the registry and export all these registry to the server:
+
+Export and save as .reg files
+HKEY_LOCAL_MACHINESoftwareORLWinVNC3
+
+HKEY_LOCAL_MACHINEsoftwareTightVNCServer
+
+HKEY-CURRENT_USERSoftwareORL
+
+I store these .reg files on the same directory as TightVNC.msi files.  I’ve create a .bat file call vnc.bat.  Here’s what’s in the .bat file:
+
+%systemroot%regedit.exe /s \servernetlogonvncvnc_server.reg
+%systemroot%regedit.exe /s \servernetlogonvnctightvnc.reg
+%systemroot%regedit.exe /s \servernetlogonvnctightvnc1.reg
+
+On your GPO: Create a new or exist gpo and edit the following settings:
+Right click on the gpo you’ve created and click on edit – Computer Configuration – >Policies – > Software -> right click and install new software.  Select TightVNC.
+
+Computer Configuration – > Policies – > Windows Setting – > Scripts (Startup/Shutdown) – > Double click startup click on add and select the .bat files created.
+
+Computer Configuration -> Policies – > Administrative Templates – > System – > Logon: Always wait for the network at computer startup and logon – Enable
+
+Apply the policy to your OU and go to the PC and type in gpupdate /force within few seconds it should as your to restart your PC and VNC should be on the bottom taskbar.  It may require another restart for VNC to apply all the settings.
+
+Good luck.
+
+source:https://etek101.wordpress.com/2013/02/26/tightvnc-via-gpo/#:~:text=On%20your%20GPO%3A%20Create%20a%20new%20or%20exist,right%20click%20and%20install%20new%20software.%20Select%20TightVNC
